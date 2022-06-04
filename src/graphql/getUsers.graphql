@@ -1,5 +1,16 @@
 query GetUsers {
-  User {
+  Users {
     Id
+    firstName
   }
 }
+query getCoordinates {
+  postgis {
+    geometry
+    id
+    name
+    properties
+    type
+  }
+}
+
