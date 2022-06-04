@@ -1,0 +1,42 @@
+{
+  "name": "nextjs-boilerplate",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "codegen": "graphql-codegen --config codegen.yml -r dotenv/config"
+  },
+  "dependencies": {
+    "graphql": "^16.5.0",
+    "graphql-request": "^4.3.0",
+    "next": "^12.1.6",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-query": "^3.39.1"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/introspection": "2.1.1",
+    "@graphql-codegen/typescript": "2.4.8",
+    "@graphql-codegen/typescript-graphql-request": "^4.4.8",
+    "@graphql-codegen/typescript-operations": "2.3.5",
+    "@graphql-codegen/typescript-react-query": "^3.5.12",
+    "@types/node": "^17.0.39",
+    "@types/react": "17.0.40",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "autoprefixer": "^10.4.7",
+    "eslint": "^8.17.0",
+    "eslint-config-next": "^12.1.6",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-react": "^7.30.0",
+    "eslint-plugin-react-hooks": "^4.5.0",
+    "postcss": "^8.4.14",
+    "prettier": "2.6.0",
+    "prettier-plugin-tailwindcss": "^0.1.11",
+    "tailwindcss": "^3.0.24",
+    "typescript": "^4.7.3"
+  }
+}
