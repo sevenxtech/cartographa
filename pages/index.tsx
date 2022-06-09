@@ -1,13 +1,18 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 
-import { useGetCoordinatesQuery,useGetUsersQuery } from '../src/graphql/generated/graphql';
+import Map from '../src/components/Map';
+
+import { useGetCoordinatesQuery, useGetUsersQuery } from '../src/graphql/generated/graphql';
 import styles from "../styles/Home.module.css";
+
+const DEFAULT_CENTER: LatLngExpression = [28.70,77.10]
 
 const Home: NextPage = () => {
   // const { data, isError, isFetching, isLoading, isFetched } = useGetCoordinatesQuery();
-  const { data, isError, isFetching, isLoading, isFetched } = useGetUsersQuery();
+  const { data, isError, isFetching, isLoading, isFetched } = useGetCoordinatesQuery();
   return (
     <div className={styles.container}>
       <Head>
@@ -16,16 +21,26 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {
-          isFetched&& <div>{data.Users.map((d,i)=>{
-            return<p key={i}>{d.Id}</p>
-          })}</div>
+        {isFetched && <Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={12}>
+          {({ TileLayer, Marker, Popup, GeoJSON, Circle, Polygon, Polyline, Rectangle }) => (
+            <>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+              />
+              <GeoJSON data={data?.postgis}>
+                {/* {data?.postgis[0].properties.language} */}
+              </GeoJSON>
+              <Marker position={DEFAULT_CENTER}>
+                <Popup>
+                  A pretty CSS3 popup. <br /> Easily customizable.
+                </Popup>
+              </Marker>
+            </>
+          )}
+        </Map>
         }
       </main>
-
-      
-
-  
     </div>
   );
 };

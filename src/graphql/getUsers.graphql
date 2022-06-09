@@ -8,7 +8,6 @@ query getCoordinates {
   postgis {
     geometry
     id
-    name
     properties
     type
   }

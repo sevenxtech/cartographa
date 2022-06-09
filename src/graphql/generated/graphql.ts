@@ -544,7 +544,6 @@ export type Postgis = {
   __typename?: 'postgis';
   geometry: Scalars['geometry'];
   id: Scalars['Int'];
-  name: Scalars['String'];
   properties: Scalars['jsonb'];
   type: Scalars['String'];
 };
@@ -603,7 +602,6 @@ export type Postgis_Bool_Exp = {
   _or?: InputMaybe<Array<Postgis_Bool_Exp>>;
   geometry?: InputMaybe<Geometry_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
   properties?: InputMaybe<Jsonb_Comparison_Exp>;
   type?: InputMaybe<String_Comparison_Exp>;
 };
@@ -638,7 +636,6 @@ export type Postgis_Inc_Input = {
 export type Postgis_Insert_Input = {
   geometry?: InputMaybe<Scalars['geometry']>;
   id?: InputMaybe<Scalars['Int']>;
-  name?: InputMaybe<Scalars['String']>;
   properties?: InputMaybe<Scalars['jsonb']>;
   type?: InputMaybe<Scalars['String']>;
 };
@@ -647,7 +644,6 @@ export type Postgis_Insert_Input = {
 export type Postgis_Max_Fields = {
   __typename?: 'postgis_max_fields';
   id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
 };
 
@@ -655,7 +651,6 @@ export type Postgis_Max_Fields = {
 export type Postgis_Min_Fields = {
   __typename?: 'postgis_min_fields';
   id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
 };
 
@@ -679,7 +674,6 @@ export type Postgis_On_Conflict = {
 export type Postgis_Order_By = {
   geometry?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
   properties?: InputMaybe<Order_By>;
   type?: InputMaybe<Order_By>;
 };
@@ -701,8 +695,6 @@ export enum Postgis_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  Name = 'name',
-  /** column name */
   Properties = 'properties',
   /** column name */
   Type = 'type'
@@ -712,7 +704,6 @@ export enum Postgis_Select_Column {
 export type Postgis_Set_Input = {
   geometry?: InputMaybe<Scalars['geometry']>;
   id?: InputMaybe<Scalars['Int']>;
-  name?: InputMaybe<Scalars['String']>;
   properties?: InputMaybe<Scalars['jsonb']>;
   type?: InputMaybe<Scalars['String']>;
 };
@@ -747,8 +738,6 @@ export enum Postgis_Update_Column {
   Geometry = 'geometry',
   /** column name */
   Id = 'id',
-  /** column name */
-  Name = 'name',
   /** column name */
   Properties = 'properties',
   /** column name */
@@ -929,7 +918,7 @@ export type GetUsersQuery = { __typename?: 'query_root', Users: Array<{ __typena
 export type GetCoordinatesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCoordinatesQuery = { __typename?: 'query_root', postgis: Array<{ __typename?: 'postgis', geometry: any, id: number, name: string, properties: any, type: string }> };
+export type GetCoordinatesQuery = { __typename?: 'query_root', postgis: Array<{ __typename?: 'postgis', geometry: any, id: number, properties: any, type: string }> };
 
 
 export const GetUsersDocument = `
@@ -957,7 +946,6 @@ export const GetCoordinatesDocument = `
   postgis {
     geometry
     id
-    name
     properties
     type
   }
