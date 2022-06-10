@@ -7,7 +7,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Mayb
 
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
-    const res = await fetch("https://unfoldingword-postgis.herokuapp.com/v1/graphql", {
+    const res = await fetch("https://cartographa-postgis.herokuapp.com/v1/graphql", {
     method: "POST",
     ...({"headers":{"x-hasura-admin-secret":"sevenx"}}),
       body: JSON.stringify({ query, variables }),
