@@ -1,10 +1,8 @@
-import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
+import { GraphQLClient } from "graphql-request";
+import { LatLngExpression } from 'leaflet';
 import type { NextPage,GetStaticProps } from "next";
 import Head from "next/head";
-import Image from "next/image";
-// import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
-import { GraphQLClient } from "graphql-request";
-import { GeoJsonObject } from 'geojson';
+// import { GeoJsonObject } from 'geojson';
 
 
 import Map from '../src/components/Map';
@@ -62,7 +60,7 @@ const Home: NextPage = (props : any) => {
               <GeoJSON data={props.postgis}>
                 {/* {props.postgis[0].properties.language} */}
               </GeoJSON>
-              <GeoJSON data={{ type: "Feature",geometry: {type: "Point",coordinates: [125.6, 10.1] }} as GeoJsonObject }/>
+              {/* <GeoJSON data={{ type: "Feature",geometry: {type: "Point",coordinates: [125.6, 10.1] }} as GeoJsonObject }/> */}
               <Marker position={DEFAULT_CENTER}>
                 <Popup>
                   A pretty CSS3 popup. <br /> Easily customizable.

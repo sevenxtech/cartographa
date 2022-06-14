@@ -14,7 +14,7 @@ import internal from 'stream';
 
 export interface MapPropType {
 
-  children: (RL: typeof ReactLeaflet,  map: BaseMap) => ReactElement;
+  children: (RL: typeof ReactLeaflet) => ReactElement;
   className?:string;
   center?:LatLngExpression;
   zoom?:number;
