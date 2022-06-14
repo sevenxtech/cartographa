@@ -1,11 +1,11 @@
 import { GraphQLClient } from "graphql-request";
-import { LatLngExpression } from 'leaflet';
+import { LatLngExpression, layerGroup } from 'leaflet';
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 // import { GeoJsonObject } from 'geojson';
 
 import Map from '../src/components/Map';
-import { GetOneCoordinatesDocument, GetOneCoordinatesQuery } from '../src/graphql/generated/graphql';
+import { GetCoordinatesDocument, GetCoordinatesQuery } from '../src/graphql/generated/graphql';
 import styles from "../styles/Home.module.css";
 
 const DEFAULT_CENTER: LatLngExpression = [28.70,77.10]
@@ -21,7 +21,7 @@ const client = new GraphQLClient(hasuraUrl as string, {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const data: GetOneCoordinatesQuery = await client.request(GetOneCoordinatesDocument);
+    const data: GetCoordinatesQuery = await client.request(GetCoordinatesDocument);
     console.log(data);
     return {
       props: data,
@@ -38,6 +38,13 @@ export interface GeoJSONPropType {
   // zoom?:number;
 
 }
+const onEachLayer = (feature:any,layer:any)=>{
+  const iso = feature.properties.iso;
+  const tier = feature.properties.Level;
+  const lang = feature.properties.language;
+  layer.bindPopup(`${iso} ${tier}  ${lang}`)
+  // layer.bindTooltip("desc",  {permanent: false, direction:"auto"})
+}
 
 const Home: NextPage = (props : any) => {
   
@@ -49,14 +56,14 @@ const Home: NextPage = (props : any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {<Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={12}>
+        {<Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={4}>
           {({ TileLayer, Marker, Popup, GeoJSON }) => (
             <>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
               />
-              <GeoJSON data={props.postgis}>
+              <GeoJSON data={props.postgis} onEachFeature={onEachLayer}>
                 {/* {props.postgis[0].properties.language} */}
               </GeoJSON>
               {/* <GeoJSON data={{ type: "Feature",geometry: {type: "Point",coordinates: [125.6, 10.1] }} as GeoJsonObject }/> */}

@@ -116,6 +116,13 @@
 }
 
 .homeMap {
-  width: 100%;
+  width: 100rem;
   height: 60rem;
 }
+
+
+.leaflet-tooltip.desc {
+  background-color: transparent;
+  border: transparent;
+  box-shadow: none;
+  }
