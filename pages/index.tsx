@@ -1,11 +1,20 @@
-import type { NextPage } from "next";
+import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
+import type { NextPage,GetStaticProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
+<<<<<<< Updated upstream
 import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 import { GraphQLClient } from "graphql-request";
 import { GetStaticProps } from "next";
 import { GeoJsonObject } from 'geojson';
 
+=======
+// import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
+import { GraphQLClient } from "graphql-request";
+import { GeoJsonObject } from 'geojson';
+
+
+>>>>>>> Stashed changes
 import Map from '../src/components/Map';
 import { GetCoordinatesDocument,GetCoordinatesQuery,GetOneCoordinatesQuery,GetOneCoordinatesDocument} from '../src/graphql/generated/graphql';
 import styles from "../styles/Home.module.css";

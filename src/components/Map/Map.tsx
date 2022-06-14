@@ -13,13 +13,13 @@ import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import internal from 'stream';
 
 export interface MapPropType {
+
   children: (RL: typeof ReactLeaflet,  map: BaseMap) => ReactElement;
   className?:string;
   center?:LatLngExpression;
   zoom?:number;
 
 }
-
 
 const { MapContainer } = ReactLeaflet;
 
@@ -32,7 +32,7 @@ const Map = ({ children, ...rest }: MapPropType,className:string) => {
 
   useEffect(() => {
     (async function init() {
-      delete L.Icon.Default.prototype._getIconUrl;
+      // delete L.Icon.Default.prototype._getIconUrl;
 
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: iconRetinaUrl.src,
