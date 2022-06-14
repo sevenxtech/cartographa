@@ -1,29 +1,26 @@
-import { ReactChildren, useEffect, ReactElement } from 'react';
+import { useEffect, ReactElement } from 'react';
+
 import L from 'leaflet';
-import * as ReactLeaflet from 'react-leaflet';
+import { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Map as BaseMap } from 'leaflet';
-import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
-
-import styles from './Map.module.css';
-
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-import internal from 'stream';
+import * as ReactLeaflet from 'react-leaflet';
+
+import styles from './Map.module.css';
 
 export interface MapPropType {
 
   children: (RL: typeof ReactLeaflet) => ReactElement;
-  className?:string;
-  center?:LatLngExpression;
-  zoom?:number;
-
+  className?: string;
+  center?: LatLngExpression;
+  zoom?: number;
 }
 
 const { MapContainer } = ReactLeaflet;
 
-const Map = ({ children, ...rest }: MapPropType,className:string) => {
+const Map = ({ children, ...rest }: MapPropType, className: string) => {
   let mapClassName = styles.map;
 
   if (className) {

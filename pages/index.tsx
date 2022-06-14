@@ -1,12 +1,11 @@
 import { GraphQLClient } from "graphql-request";
 import { LatLngExpression } from 'leaflet';
-import type { NextPage,GetStaticProps } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 // import { GeoJsonObject } from 'geojson';
 
-
 import Map from '../src/components/Map';
-import { GetCoordinatesDocument,GetCoordinatesQuery,GetOneCoordinatesQuery,GetOneCoordinatesDocument} from '../src/graphql/generated/graphql';
+import { GetOneCoordinatesDocument, GetOneCoordinatesQuery } from '../src/graphql/generated/graphql';
 import styles from "../styles/Home.module.css";
 
 const DEFAULT_CENTER: LatLngExpression = [28.70,77.10]
@@ -20,7 +19,7 @@ const client = new GraphQLClient(hasuraUrl as string, {
   },
 });
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async () => {
   try {
     const data: GetOneCoordinatesQuery = await client.request(GetOneCoordinatesDocument);
     console.log(data);
@@ -51,7 +50,7 @@ const Home: NextPage = (props : any) => {
       </Head>
       <main>
         {<Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={12}>
-          {({ TileLayer, Marker, Popup, GeoJSON, Circle, Polygon, Polyline, Rectangle }) => (
+          {({ TileLayer, Marker, Popup, GeoJSON }) => (
             <>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
