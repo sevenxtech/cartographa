@@ -13,3 +13,12 @@ query getCoordinates {
   }
 }
 
+query getOneCoordinates {
+  postgis(limit: 1, where: {}) {
+    geometry
+    id
+    properties
+    type
+  }
+}
+
