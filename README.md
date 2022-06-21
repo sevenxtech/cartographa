@@ -1,4 +1,5 @@
 # Cartographa
+POC of a modern JS based open source geospatial data visualization web application integrated with  a secure post GIS API backend using GraphQL . Supports geoJSON map data - points, polygons, lines and layer selection, filtering and more.  Addition of point and click vector editing and polygon generation tools to be added in future.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
