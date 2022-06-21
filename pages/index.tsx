@@ -2,52 +2,27 @@ import { GraphQLClient } from "graphql-request";
 import { LatLngExpression, layerGroup } from 'leaflet';
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 // import { GeoJsonObject } from 'geojson';
 
+import useClient from "@clients/useClient";
 import Map from '../src/components/Map';
-import { GetCoordinatesDocument, GetCoordinatesQuery } from '../src/graphql/generated/graphql';
+import MapSelect from "@components/Select/MapSelect";
+import { GetOneCoordinatesDocument, GetOneCoordinatesQuery, useGetLayerOnIsoQuery, GetLayerOnIsoQuery, GetLayerOnIsoDocument, useGetOneCoordinatesQuery } from '../src/graphql/generated/graphql';
 import styles from "../styles/Home.module.css";
+import Greeting from "@components/Greeting";
 
-const DEFAULT_CENTER: LatLngExpression = [28.70,77.10]
+// const hasuraUrl = process.env.HASURA_GRAPHQL_URL;
+// const token = process.env.HASURA_GRAPHQL_ADMIN_SECRET;
 
-const hasuraUrl = process.env.HASURA_GRAPHQL_URL;
-const token = process.env.HASURA_GRAPHQL_ADMIN_SECRET;
+// const client = new GraphQLClient(hasuraUrl as string, {
+//   headers: {
+//     "x-hasura-admin-secret": token!,
+//   },
+// });
 
-const client = new GraphQLClient(hasuraUrl as string, {
-  headers: {
-    "x-hasura-admin-secret" : token!,
-  },
-});
+const Home = (props: any) => {
 
-export const getStaticProps: GetStaticProps = async () => {
-  try {
-    const data: GetCoordinatesQuery = await client.request(GetCoordinatesDocument);
-    console.log(data);
-    return {
-      props: data,
-    };
-  } catch (error: any) {
-    throw new Error(error);
-  }
-};
-
-export interface GeoJSONPropType {
-  // children: (RL: typeof ReactLeaflet,  map: BaseMap) => ReactElement;
-  data?:string;
-  // center?:LatLngExpression;
-  // zoom?:number;
-
-}
-const onEachLayer = (feature:any,layer:any)=>{
-  const iso = feature.properties.iso;
-  const tier = feature.properties.Level;
-  const lang = feature.properties.language;
-  layer.bindPopup(`${iso} ${tier}  ${lang}`)
-  // layer.bindTooltip("desc",  {permanent: false, direction:"auto"})
-}
-
-const Home: NextPage = (props : any) => {
-  
   return (
     <div className={styles.container}>
       <Head>
@@ -56,25 +31,9 @@ const Home: NextPage = (props : any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {<Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={4}>
-          {({ TileLayer, Marker, Popup, GeoJSON }) => (
-            <>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-              />
-              <GeoJSON data={props.postgis} onEachFeature={onEachLayer}>
-                {/* {props.postgis[0].properties.language} */}
-              </GeoJSON>
-              {/* <GeoJSON data={{ type: "Feature",geometry: {type: "Point",coordinates: [125.6, 10.1] }} as GeoJsonObject }/> */}
-              <Marker position={DEFAULT_CENTER}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker>
-            </>
-          )}
-        </Map>}
+
+        <MapSelect />
+
       </main>
     </div>
   );

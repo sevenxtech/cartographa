@@ -14,11 +14,21 @@ query getCoordinates {
 }
 
 query getOneCoordinates {
-  postgis(limit: 1, where: {}) {
+  postgis(limit: 1) {
     geometry
     id
     properties
     type
   }
 }
+
+query getLayerOnIso($iso:String!) {
+  postgis(where: {iso: {_eq: $iso}}) {
+    geometry
+    id
+    properties
+    type
+  }
+}
+
 

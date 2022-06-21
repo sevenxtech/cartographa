@@ -1,3 +1,5 @@
+import { GraphQLClient } from 'graphql-request';
+import { RequestInit } from 'graphql-request/dist/types.dom';
 import { useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -5,24 +7,8 @@ export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K]
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
-function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch("https://cartographa-postgis.herokuapp.com/v1/graphql", {
-    method: "POST",
-    ...({"headers":{"x-hasura-admin-secret":"cartographa-sevenx"}}),
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
+function fetcher<TData, TVariables>(client: GraphQLClient, query: string, variables?: TVariables, headers?: RequestInit['headers']) {
+  return async (): Promise<TData> => client.request<TData, TVariables>(query, variables, headers);
 }
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -35,6 +21,19 @@ export type Scalars = {
   geometry: any;
   jsonb: any;
   timestamptz: any;
+};
+
+/** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
+export type Float_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Float']>;
+  _gt?: InputMaybe<Scalars['Float']>;
+  _gte?: InputMaybe<Scalars['Float']>;
+  _in?: InputMaybe<Array<Scalars['Float']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['Float']>;
+  _lte?: InputMaybe<Scalars['Float']>;
+  _neq?: InputMaybe<Scalars['Float']>;
+  _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
@@ -409,6 +408,10 @@ export type Mutation_Root = {
   delete_Users_by_pk?: Maybe<Users>;
   /** delete data from the table: "postgis" */
   delete_postgis?: Maybe<Postgis_Mutation_Response>;
+  /** delete data from the table: "postgis_2" */
+  delete_postgis_2?: Maybe<Postgis_2_Mutation_Response>;
+  /** delete single row from the table: "postgis_2" */
+  delete_postgis_2_by_pk?: Maybe<Postgis_2>;
   /** delete single row from the table: "postgis" */
   delete_postgis_by_pk?: Maybe<Postgis>;
   /** insert data into the table: "Users" */
@@ -417,6 +420,10 @@ export type Mutation_Root = {
   insert_Users_one?: Maybe<Users>;
   /** insert data into the table: "postgis" */
   insert_postgis?: Maybe<Postgis_Mutation_Response>;
+  /** insert data into the table: "postgis_2" */
+  insert_postgis_2?: Maybe<Postgis_2_Mutation_Response>;
+  /** insert a single row into the table: "postgis_2" */
+  insert_postgis_2_one?: Maybe<Postgis_2>;
   /** insert a single row into the table: "postgis" */
   insert_postgis_one?: Maybe<Postgis>;
   /** update data of the table: "Users" */
@@ -425,6 +432,10 @@ export type Mutation_Root = {
   update_Users_by_pk?: Maybe<Users>;
   /** update data of the table: "postgis" */
   update_postgis?: Maybe<Postgis_Mutation_Response>;
+  /** update data of the table: "postgis_2" */
+  update_postgis_2?: Maybe<Postgis_2_Mutation_Response>;
+  /** update single row of the table: "postgis_2" */
+  update_postgis_2_by_pk?: Maybe<Postgis_2>;
   /** update single row of the table: "postgis" */
   update_postgis_by_pk?: Maybe<Postgis>;
 };
@@ -445,6 +456,18 @@ export type Mutation_RootDelete_Users_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootDelete_PostgisArgs = {
   where: Postgis_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Postgis_2Args = {
+  where: Postgis_2_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Postgis_2_By_PkArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -472,6 +495,20 @@ export type Mutation_RootInsert_Users_OneArgs = {
 export type Mutation_RootInsert_PostgisArgs = {
   objects: Array<Postgis_Insert_Input>;
   on_conflict?: InputMaybe<Postgis_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Postgis_2Args = {
+  objects: Array<Postgis_2_Insert_Input>;
+  on_conflict?: InputMaybe<Postgis_2_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Postgis_2_OneArgs = {
+  object: Postgis_2_Insert_Input;
+  on_conflict?: InputMaybe<Postgis_2_On_Conflict>;
 };
 
 
@@ -512,6 +549,32 @@ export type Mutation_RootUpdate_PostgisArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Postgis_2Args = {
+  _append?: InputMaybe<Postgis_2_Append_Input>;
+  _delete_at_path?: InputMaybe<Postgis_2_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Postgis_2_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Postgis_2_Delete_Key_Input>;
+  _inc?: InputMaybe<Postgis_2_Inc_Input>;
+  _prepend?: InputMaybe<Postgis_2_Prepend_Input>;
+  _set?: InputMaybe<Postgis_2_Set_Input>;
+  where: Postgis_2_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Postgis_2_By_PkArgs = {
+  _append?: InputMaybe<Postgis_2_Append_Input>;
+  _delete_at_path?: InputMaybe<Postgis_2_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Postgis_2_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Postgis_2_Delete_Key_Input>;
+  _inc?: InputMaybe<Postgis_2_Inc_Input>;
+  _prepend?: InputMaybe<Postgis_2_Prepend_Input>;
+  _set?: InputMaybe<Postgis_2_Set_Input>;
+  pk_columns: Postgis_2_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Postgis_By_PkArgs = {
   _append?: InputMaybe<Postgis_Append_Input>;
   _delete_at_path?: InputMaybe<Postgis_Delete_At_Path_Input>;
@@ -544,6 +607,7 @@ export type Postgis = {
   __typename?: 'postgis';
   geometry: Scalars['geometry'];
   id: Scalars['Int'];
+  iso?: Maybe<Scalars['String']>;
   properties: Scalars['jsonb'];
   type: Scalars['String'];
 };
@@ -552,6 +616,271 @@ export type Postgis = {
 /** columns and relationships of "postgis" */
 export type PostgisPropertiesArgs = {
   path?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "postgis_2" */
+export type Postgis_2 = {
+  __typename?: 'postgis_2';
+  fid?: Maybe<Scalars['Float']>;
+  geometry?: Maybe<Scalars['geometry']>;
+  id: Scalars['Int'];
+  iso?: Maybe<Scalars['String']>;
+  language?: Maybe<Scalars['String']>;
+  properties?: Maybe<Scalars['jsonb']>;
+  tier?: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "postgis_2" */
+export type Postgis_2PropertiesArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "postgis_2" */
+export type Postgis_2_Aggregate = {
+  __typename?: 'postgis_2_aggregate';
+  aggregate?: Maybe<Postgis_2_Aggregate_Fields>;
+  nodes: Array<Postgis_2>;
+};
+
+/** aggregate fields of "postgis_2" */
+export type Postgis_2_Aggregate_Fields = {
+  __typename?: 'postgis_2_aggregate_fields';
+  avg?: Maybe<Postgis_2_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Postgis_2_Max_Fields>;
+  min?: Maybe<Postgis_2_Min_Fields>;
+  stddev?: Maybe<Postgis_2_Stddev_Fields>;
+  stddev_pop?: Maybe<Postgis_2_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Postgis_2_Stddev_Samp_Fields>;
+  sum?: Maybe<Postgis_2_Sum_Fields>;
+  var_pop?: Maybe<Postgis_2_Var_Pop_Fields>;
+  var_samp?: Maybe<Postgis_2_Var_Samp_Fields>;
+  variance?: Maybe<Postgis_2_Variance_Fields>;
+};
+
+
+/** aggregate fields of "postgis_2" */
+export type Postgis_2_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Postgis_2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Postgis_2_Append_Input = {
+  properties?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** aggregate avg on columns */
+export type Postgis_2_Avg_Fields = {
+  __typename?: 'postgis_2_avg_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "postgis_2". All fields are combined with a logical 'AND'. */
+export type Postgis_2_Bool_Exp = {
+  _and?: InputMaybe<Array<Postgis_2_Bool_Exp>>;
+  _not?: InputMaybe<Postgis_2_Bool_Exp>;
+  _or?: InputMaybe<Array<Postgis_2_Bool_Exp>>;
+  fid?: InputMaybe<Float_Comparison_Exp>;
+  geometry?: InputMaybe<Geometry_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  iso?: InputMaybe<String_Comparison_Exp>;
+  language?: InputMaybe<String_Comparison_Exp>;
+  properties?: InputMaybe<Jsonb_Comparison_Exp>;
+  tier?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "postgis_2" */
+export enum Postgis_2_Constraint {
+  /** unique or primary key constraint */
+  Postgis_2Pkey = 'postgis_2_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Postgis_2_Delete_At_Path_Input = {
+  properties?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Postgis_2_Delete_Elem_Input = {
+  properties?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Postgis_2_Delete_Key_Input = {
+  properties?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for incrementing numeric columns in table "postgis_2" */
+export type Postgis_2_Inc_Input = {
+  fid?: InputMaybe<Scalars['Float']>;
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "postgis_2" */
+export type Postgis_2_Insert_Input = {
+  fid?: InputMaybe<Scalars['Float']>;
+  geometry?: InputMaybe<Scalars['geometry']>;
+  id?: InputMaybe<Scalars['Int']>;
+  iso?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']>;
+  properties?: InputMaybe<Scalars['jsonb']>;
+  tier?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Postgis_2_Max_Fields = {
+  __typename?: 'postgis_2_max_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Int']>;
+  iso?: Maybe<Scalars['String']>;
+  language?: Maybe<Scalars['String']>;
+  tier?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Postgis_2_Min_Fields = {
+  __typename?: 'postgis_2_min_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Int']>;
+  iso?: Maybe<Scalars['String']>;
+  language?: Maybe<Scalars['String']>;
+  tier?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "postgis_2" */
+export type Postgis_2_Mutation_Response = {
+  __typename?: 'postgis_2_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Postgis_2>;
+};
+
+/** on_conflict condition type for table "postgis_2" */
+export type Postgis_2_On_Conflict = {
+  constraint: Postgis_2_Constraint;
+  update_columns?: Array<Postgis_2_Update_Column>;
+  where?: InputMaybe<Postgis_2_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "postgis_2". */
+export type Postgis_2_Order_By = {
+  fid?: InputMaybe<Order_By>;
+  geometry?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  iso?: InputMaybe<Order_By>;
+  language?: InputMaybe<Order_By>;
+  properties?: InputMaybe<Order_By>;
+  tier?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: postgis_2 */
+export type Postgis_2_Pk_Columns_Input = {
+  id: Scalars['Int'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Postgis_2_Prepend_Input = {
+  properties?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "postgis_2" */
+export enum Postgis_2_Select_Column {
+  /** column name */
+  Fid = 'fid',
+  /** column name */
+  Geometry = 'geometry',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Iso = 'iso',
+  /** column name */
+  Language = 'language',
+  /** column name */
+  Properties = 'properties',
+  /** column name */
+  Tier = 'tier'
+}
+
+/** input type for updating data in table "postgis_2" */
+export type Postgis_2_Set_Input = {
+  fid?: InputMaybe<Scalars['Float']>;
+  geometry?: InputMaybe<Scalars['geometry']>;
+  id?: InputMaybe<Scalars['Int']>;
+  iso?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']>;
+  properties?: InputMaybe<Scalars['jsonb']>;
+  tier?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate stddev on columns */
+export type Postgis_2_Stddev_Fields = {
+  __typename?: 'postgis_2_stddev_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Postgis_2_Stddev_Pop_Fields = {
+  __typename?: 'postgis_2_stddev_pop_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Postgis_2_Stddev_Samp_Fields = {
+  __typename?: 'postgis_2_stddev_samp_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate sum on columns */
+export type Postgis_2_Sum_Fields = {
+  __typename?: 'postgis_2_sum_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** update columns of table "postgis_2" */
+export enum Postgis_2_Update_Column {
+  /** column name */
+  Fid = 'fid',
+  /** column name */
+  Geometry = 'geometry',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Iso = 'iso',
+  /** column name */
+  Language = 'language',
+  /** column name */
+  Properties = 'properties',
+  /** column name */
+  Tier = 'tier'
+}
+
+/** aggregate var_pop on columns */
+export type Postgis_2_Var_Pop_Fields = {
+  __typename?: 'postgis_2_var_pop_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Postgis_2_Var_Samp_Fields = {
+  __typename?: 'postgis_2_var_samp_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Postgis_2_Variance_Fields = {
+  __typename?: 'postgis_2_variance_fields';
+  fid?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregated selection of "postgis" */
@@ -602,6 +931,7 @@ export type Postgis_Bool_Exp = {
   _or?: InputMaybe<Array<Postgis_Bool_Exp>>;
   geometry?: InputMaybe<Geometry_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
+  iso?: InputMaybe<String_Comparison_Exp>;
   properties?: InputMaybe<Jsonb_Comparison_Exp>;
   type?: InputMaybe<String_Comparison_Exp>;
 };
@@ -636,6 +966,7 @@ export type Postgis_Inc_Input = {
 export type Postgis_Insert_Input = {
   geometry?: InputMaybe<Scalars['geometry']>;
   id?: InputMaybe<Scalars['Int']>;
+  iso?: InputMaybe<Scalars['String']>;
   properties?: InputMaybe<Scalars['jsonb']>;
   type?: InputMaybe<Scalars['String']>;
 };
@@ -644,6 +975,7 @@ export type Postgis_Insert_Input = {
 export type Postgis_Max_Fields = {
   __typename?: 'postgis_max_fields';
   id?: Maybe<Scalars['Int']>;
+  iso?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
 };
 
@@ -651,6 +983,7 @@ export type Postgis_Max_Fields = {
 export type Postgis_Min_Fields = {
   __typename?: 'postgis_min_fields';
   id?: Maybe<Scalars['Int']>;
+  iso?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
 };
 
@@ -674,6 +1007,7 @@ export type Postgis_On_Conflict = {
 export type Postgis_Order_By = {
   geometry?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  iso?: InputMaybe<Order_By>;
   properties?: InputMaybe<Order_By>;
   type?: InputMaybe<Order_By>;
 };
@@ -695,6 +1029,8 @@ export enum Postgis_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Iso = 'iso',
+  /** column name */
   Properties = 'properties',
   /** column name */
   Type = 'type'
@@ -704,6 +1040,7 @@ export enum Postgis_Select_Column {
 export type Postgis_Set_Input = {
   geometry?: InputMaybe<Scalars['geometry']>;
   id?: InputMaybe<Scalars['Int']>;
+  iso?: InputMaybe<Scalars['String']>;
   properties?: InputMaybe<Scalars['jsonb']>;
   type?: InputMaybe<Scalars['String']>;
 };
@@ -739,6 +1076,8 @@ export enum Postgis_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Iso = 'iso',
+  /** column name */
   Properties = 'properties',
   /** column name */
   Type = 'type'
@@ -772,6 +1111,12 @@ export type Query_Root = {
   Users_by_pk?: Maybe<Users>;
   /** fetch data from the table: "postgis" */
   postgis: Array<Postgis>;
+  /** fetch data from the table: "postgis_2" */
+  postgis_2: Array<Postgis_2>;
+  /** fetch aggregated fields from the table: "postgis_2" */
+  postgis_2_aggregate: Postgis_2_Aggregate;
+  /** fetch data from the table: "postgis_2" using primary key columns */
+  postgis_2_by_pk?: Maybe<Postgis_2>;
   /** fetch aggregated fields from the table: "postgis" */
   postgis_aggregate: Postgis_Aggregate;
   /** fetch data from the table: "postgis" using primary key columns */
@@ -811,6 +1156,29 @@ export type Query_RootPostgisArgs = {
 };
 
 
+export type Query_RootPostgis_2Args = {
+  distinct_on?: InputMaybe<Array<Postgis_2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Postgis_2_Order_By>>;
+  where?: InputMaybe<Postgis_2_Bool_Exp>;
+};
+
+
+export type Query_RootPostgis_2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Postgis_2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Postgis_2_Order_By>>;
+  where?: InputMaybe<Postgis_2_Bool_Exp>;
+};
+
+
+export type Query_RootPostgis_2_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type Query_RootPostgis_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Postgis_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -845,6 +1213,12 @@ export type Subscription_Root = {
   Users_by_pk?: Maybe<Users>;
   /** fetch data from the table: "postgis" */
   postgis: Array<Postgis>;
+  /** fetch data from the table: "postgis_2" */
+  postgis_2: Array<Postgis_2>;
+  /** fetch aggregated fields from the table: "postgis_2" */
+  postgis_2_aggregate: Postgis_2_Aggregate;
+  /** fetch data from the table: "postgis_2" using primary key columns */
+  postgis_2_by_pk?: Maybe<Postgis_2>;
   /** fetch aggregated fields from the table: "postgis" */
   postgis_aggregate: Postgis_Aggregate;
   /** fetch data from the table: "postgis" using primary key columns */
@@ -881,6 +1255,29 @@ export type Subscription_RootPostgisArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Postgis_Order_By>>;
   where?: InputMaybe<Postgis_Bool_Exp>;
+};
+
+
+export type Subscription_RootPostgis_2Args = {
+  distinct_on?: InputMaybe<Array<Postgis_2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Postgis_2_Order_By>>;
+  where?: InputMaybe<Postgis_2_Bool_Exp>;
+};
+
+
+export type Subscription_RootPostgis_2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Postgis_2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Postgis_2_Order_By>>;
+  where?: InputMaybe<Postgis_2_Bool_Exp>;
+};
+
+
+export type Subscription_RootPostgis_2_By_PkArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -925,6 +1322,13 @@ export type GetOneCoordinatesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetOneCoordinatesQuery = { __typename?: 'query_root', postgis: Array<{ __typename?: 'postgis', geometry: any, id: number, properties: any, type: string }> };
 
+export type GetLayerOnIsoQueryVariables = Exact<{
+  iso: Scalars['String'];
+}>;
+
+
+export type GetLayerOnIsoQuery = { __typename?: 'query_root', postgis: Array<{ __typename?: 'postgis', geometry: any, id: number, properties: any, type: string }> };
+
 
 export const GetUsersDocument = `
     query GetUsers {
@@ -938,12 +1342,14 @@ export const useGetUsersQuery = <
       TData = GetUsersQuery,
       TError = unknown
     >(
+      client: GraphQLClient,
       variables?: GetUsersQueryVariables,
-      options?: UseQueryOptions<GetUsersQuery, TError, TData>
+      options?: UseQueryOptions<GetUsersQuery, TError, TData>,
+      headers?: RequestInit['headers']
     ) =>
     useQuery<GetUsersQuery, TError, TData>(
       variables === undefined ? ['GetUsers'] : ['GetUsers', variables],
-      fetcher<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, variables),
+      fetcher<GetUsersQuery, GetUsersQueryVariables>(client, GetUsersDocument, variables, headers),
       options
     );
 export const GetCoordinatesDocument = `
@@ -960,17 +1366,19 @@ export const useGetCoordinatesQuery = <
       TData = GetCoordinatesQuery,
       TError = unknown
     >(
+      client: GraphQLClient,
       variables?: GetCoordinatesQueryVariables,
-      options?: UseQueryOptions<GetCoordinatesQuery, TError, TData>
+      options?: UseQueryOptions<GetCoordinatesQuery, TError, TData>,
+      headers?: RequestInit['headers']
     ) =>
     useQuery<GetCoordinatesQuery, TError, TData>(
       variables === undefined ? ['getCoordinates'] : ['getCoordinates', variables],
-      fetcher<GetCoordinatesQuery, GetCoordinatesQueryVariables>(GetCoordinatesDocument, variables),
+      fetcher<GetCoordinatesQuery, GetCoordinatesQueryVariables>(client, GetCoordinatesDocument, variables, headers),
       options
     );
 export const GetOneCoordinatesDocument = `
     query getOneCoordinates {
-  postgis(limit: 1, where: {}) {
+  postgis(limit: 1) {
     geometry
     id
     properties
@@ -982,11 +1390,37 @@ export const useGetOneCoordinatesQuery = <
       TData = GetOneCoordinatesQuery,
       TError = unknown
     >(
+      client: GraphQLClient,
       variables?: GetOneCoordinatesQueryVariables,
-      options?: UseQueryOptions<GetOneCoordinatesQuery, TError, TData>
+      options?: UseQueryOptions<GetOneCoordinatesQuery, TError, TData>,
+      headers?: RequestInit['headers']
     ) =>
     useQuery<GetOneCoordinatesQuery, TError, TData>(
       variables === undefined ? ['getOneCoordinates'] : ['getOneCoordinates', variables],
-      fetcher<GetOneCoordinatesQuery, GetOneCoordinatesQueryVariables>(GetOneCoordinatesDocument, variables),
+      fetcher<GetOneCoordinatesQuery, GetOneCoordinatesQueryVariables>(client, GetOneCoordinatesDocument, variables, headers),
+      options
+    );
+export const GetLayerOnIsoDocument = `
+    query getLayerOnIso($iso: String!) {
+  postgis(where: {iso: {_eq: $iso}}) {
+    geometry
+    id
+    properties
+    type
+  }
+}
+    `;
+export const useGetLayerOnIsoQuery = <
+      TData = GetLayerOnIsoQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetLayerOnIsoQueryVariables,
+      options?: UseQueryOptions<GetLayerOnIsoQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetLayerOnIsoQuery, TError, TData>(
+      ['getLayerOnIso', variables],
+      fetcher<GetLayerOnIsoQuery, GetLayerOnIsoQueryVariables>(client, GetLayerOnIsoDocument, variables, headers),
       options
     );

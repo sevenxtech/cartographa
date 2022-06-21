@@ -16,6 +16,9 @@ export interface MapPropType {
   className?: string;
   center?: LatLngExpression;
   zoom?: number;
+  dragging?:boolean;
+  attributionControl:boolean;
+  zoomControl:boolean;
 }
 
 const { MapContainer } = ReactLeaflet;

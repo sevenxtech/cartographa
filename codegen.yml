@@ -11,11 +11,11 @@ generates:
       - "typescript-operations"
       - "typescript-react-query"
     config:
-      fetcher:
-        endpoint: ${HASURA_GRAPHQL_URL}
-        fetchParams:
-          headers:
-            x-hasura-admin-secret: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      fetcher: graphql-request
+        # endpoint: ${HASURA_GRAPHQL_URL}
+        # fetchParams:
+        #   headers:
+        #     x-hasura-admin-secret: ${HASURA_GRAPHQL_ADMIN_SECRET}
   ./graphql.schema.json:
     plugins:
       - "introspection"
