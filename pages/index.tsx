@@ -1,27 +1,10 @@
-import { GraphQLClient } from "graphql-request";
-import { LatLngExpression, layerGroup } from 'leaflet';
-import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
-// import { GeoJsonObject } from 'geojson';
 
-import useClient from "@clients/useClient";
-import Map from '../src/components/Map';
 import MapSelect from "@components/Select/MapSelect";
-import { GetOneCoordinatesDocument, GetOneCoordinatesQuery, useGetLayerOnIsoQuery, GetLayerOnIsoQuery, GetLayerOnIsoDocument, useGetOneCoordinatesQuery } from '../src/graphql/generated/graphql';
+
 import styles from "../styles/Home.module.css";
-import Greeting from "@components/Greeting";
 
-// const hasuraUrl = process.env.HASURA_GRAPHQL_URL;
-// const token = process.env.HASURA_GRAPHQL_ADMIN_SECRET;
-
-// const client = new GraphQLClient(hasuraUrl as string, {
-//   headers: {
-//     "x-hasura-admin-secret": token!,
-//   },
-// });
-
-const Home = (props: any) => {
+const Home = () => {
 
   return (
     <div className={styles.container}>
@@ -31,9 +14,7 @@ const Home = (props: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-
         <MapSelect />
-
       </main>
     </div>
   );

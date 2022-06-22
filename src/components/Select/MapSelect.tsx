@@ -1,11 +1,9 @@
-import useClient from '@clients/useClient';
-import { useEffect, useRef, useState } from 'react'
-import { GetLayerOnIsoQuery, GetOneCoordinatesDocument, GetOneCoordinatesQuery, useGetLayerOnIsoQuery, useGetOneCoordinatesQuery } from 'src/graphql/generated/graphql';
-import Map from '@components/Map';
+import { useEffect, useRef, useState } from 'react';
+
 import styles from "@../../styles/Home.module.css";
-import { LatLngExpression, Polygon, GeoJSON } from 'leaflet';
-import { GetStaticProps } from 'next/types';
-import { GraphQLClient } from 'graphql-request';
+import { LatLngExpression } from 'leaflet';
+
+import Map from '@components/Map';
 
 const languages = [
   { iso: "ars", language: "Nadji Arabic" },
@@ -15,11 +13,11 @@ const languages = [
 ]
 const DEFAULT_CENTER: LatLngExpression = [28.70, 77.10]
 
-const MapSelect = (props: any) => {
+const MapSelect = () => {
   // let mapData;
   const [isoCode, setIsoCode] = useState('ars');
   const [language, setLanguage] = useState('Nadji Arabic');
-  const [mapData, setmapData] = useState();
+  const [mapData, setmapData] = useState<any>();
   const [isLoading, setLoading] = useState(false);
 
   const onSelect: any = (data: any) => {
@@ -41,17 +39,19 @@ const MapSelect = (props: any) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setmapData(data)
+        setmapData(data.postgis)
         setLoading(false)
         console.log("apiresponse", data)
       })
   }, [isoCode, setIsoCode])
 
-  const geoJsonRef = useRef();
+  const geoJsonRef = useRef<any>();
+
   useEffect(() => {
     if (geoJsonRef.current) {
+      console.log("REF:", geoJsonRef.current);
       geoJsonRef.current.clearLayers();
-      geoJsonRef.current.addData(mapData.postgis);
+      geoJsonRef.current.addData(mapData);
     }
   }, [mapData]);
 
@@ -67,19 +67,19 @@ const MapSelect = (props: any) => {
     <div>
       <ul>
         {languages.map((e, i) => {
-          return <li key={i} className ="p-1"> <button onClick={() => onSelect(e)} className="bg-blue-500 hover:bg-blue-700 text-white  py-1 px-2">{e.iso} - {e.language}</button></li>
+          return <li key={i} className="p-1"> <button onClick={() => onSelect(e)} className="bg-blue-500 hover:bg-blue-700 text-white  py-1 px-2">{e.iso} - {e.language}</button></li>
         })}
       </ul>
       {isLoading && <p>Loading Map...</p>}
       {!isLoading && <p>{language}</p>}
       {mapData && <Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={4} dragging={true} attributionControl={false} zoomControl={false}>
-        {({ TileLayer, Marker, Popup, GeoJSON }) => (
+        {({ TileLayer, GeoJSON }) => (
           <>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <GeoJSON ref={geoJsonRef} data={mapData.postgis} onEachFeature={onEachLayer}>
+            <GeoJSON ref={geoJsonRef} data={mapData} onEachFeature={onEachLayer}>
             </GeoJSON>
           </>
         )}

@@ -1,16 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { GraphQLClient } from "graphql-request";
-import {
-  GetLayerOnIsoQuery,
-  GetOneCoordinatesDocument,
-  GetUsersQuery,
-  GetOneCoordinatesQuery,
-  useGetLayerOnIsoQuery,
-  useGetOneCoordinatesQuery,
-  GetUsersDocument,
-  GetLayerOnIsoDocument,
-} from "src/graphql/generated/graphql";
+
 import useClient from "@clients/useClient";
+import {GetLayerOnIsoDocument, GetLayerOnIsoQuery} from "src/graphql/generated/graphql";
+
 
 // export default function handler(
 //   req: NextApiRequest,
@@ -44,7 +36,7 @@ import useClient from "@clients/useClient";
 //     throw new Error(error);
 //   }
 // };
-const handler = async (
+const useHandler = async (
   req: NextApiRequest,
   res: NextApiResponse<GetLayerOnIsoQuery>
 ) => {
@@ -59,4 +51,4 @@ const handler = async (
   }
 };
 
-export default handler;
+export default useHandler;
