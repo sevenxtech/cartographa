@@ -1,5 +1,5 @@
 import useClient from '@clients/useClient';
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GetLayerOnIsoQuery, GetOneCoordinatesDocument, GetOneCoordinatesQuery, useGetLayerOnIsoQuery, useGetOneCoordinatesQuery } from 'src/graphql/generated/graphql';
 import Map from '@components/Map';
 import styles from "@../../styles/Home.module.css";
@@ -15,48 +15,45 @@ const languages = [
 ]
 const DEFAULT_CENTER: LatLngExpression = [28.70, 77.10]
 
-const hasuraUrl = process.env.HASURA_GRAPHQL_URL;
-const token = process.env.HASURA_GRAPHQL_ADMIN_SECRET;
-
-const client = new GraphQLClient(hasuraUrl as string, {
-  headers: {
-    "x-hasura-admin-secret": token!,
-  },
-});
-
-
 const MapSelect = (props: any) => {
   // let mapData;
-  const [language, setLanguage] = useState();
-  const [mapData, setmapData] = useState()
-  const [isLoading, setLoading] = useState(false)
+  const [isoCode, setIsoCode] = useState('ars');
+  const [language, setLanguage] = useState('Nadji Arabic');
+  const [mapData, setmapData] = useState();
+  const [isLoading, setLoading] = useState(false);
 
   const onSelect: any = (data: any) => {
-    setLanguage(data.iso);
+    setIsoCode(data.iso);
+    setLanguage(data.language);
   }
 
-    useEffect(() => {
-    setLoading(true)
+  useEffect(() => {
+    setLoading(true);
     fetch('/api/graphqlapi', {
       method: "post",
       headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',                  
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify({
-          language,
+        isoCode,
       })
-  })
+    })
       .then((res) => res.json())
       .then((data) => {
-//         mapData = mapData.slice(0);
-// mapData[0] = data.postgis[0];
-// setmapData(mapData);
         setmapData(data)
         setLoading(false)
         console.log("apiresponse", data)
       })
-  }, [language,setLanguage])
+  }, [isoCode, setIsoCode])
+
+  const geoJsonRef = useRef();
+  useEffect(() => {
+    if (geoJsonRef.current) {
+      geoJsonRef.current.clearLayers();
+      geoJsonRef.current.addData(mapData.postgis);
+    }
+  }, [mapData]);
 
   const onEachLayer = (feature: any, layer: any) => {
     const iso = feature.properties.iso;
@@ -67,13 +64,15 @@ const MapSelect = (props: any) => {
   }
 
   return (
-    <div>Select
+    <div>
+      <h2>Select Language</h2>
       <ul>
         {languages.map((e, i) => {
-          return <li key={i}> <button onClick={() => onSelect(e)}>{e.iso}</button></li>
-        })}</ul>
-        
-      {isLoading && <p>Loading Map</p>}
+          return <li key={i}> <button onClick={() => onSelect(e)}>{e.iso} - {e.language}</button></li>
+        })}
+      </ul>
+      {isLoading && <p>Loading Map...</p>}
+      {!isLoading && <p>{language}</p>}
       {mapData && <Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={4} dragging={true} attributionControl={false} zoomControl={false}>
         {({ TileLayer, Marker, Popup, GeoJSON }) => (
           <>
@@ -81,7 +80,7 @@ const MapSelect = (props: any) => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <GeoJSON data={mapData.postgis} onEachFeature={onEachLayer}>
+            <GeoJSON ref={geoJsonRef} data={mapData.postgis} onEachFeature={onEachLayer}>
             </GeoJSON>
           </>
         )}

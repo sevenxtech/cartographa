@@ -50,7 +50,7 @@ const handler = async (
 ) => {
   try {
     console.log("api post request", req.body);
-    const data: GetLayerOnIsoQuery = await useClient().request(GetLayerOnIsoDocument, {iso:req.body.language}
+    const data: GetLayerOnIsoQuery = await useClient().request(GetLayerOnIsoDocument, {iso:req.body.isoCode}
     );
     console.log("api call", data);
     res.status(200).json(data);
