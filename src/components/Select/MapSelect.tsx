@@ -65,10 +65,9 @@ const MapSelect = (props: any) => {
 
   return (
     <div>
-      <h2>Select Language</h2>
       <ul>
         {languages.map((e, i) => {
-          return <li key={i}> <button onClick={() => onSelect(e)}>{e.iso} - {e.language}</button></li>
+          return <li key={i} className ="p-1"> <button onClick={() => onSelect(e)} className="bg-blue-500 hover:bg-blue-700 text-white  py-1 px-2">{e.iso} - {e.language}</button></li>
         })}
       </ul>
       {isLoading && <p>Loading Map...</p>}
