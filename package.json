@@ -9,6 +9,8 @@
     "codegen": "graphql-codegen --config codegen.yml -r dotenv/config"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.5",
+    "@heroicons/react": "^1.0.6",
     "graphql": "^16.5.0",
     "graphql-request": "^4.3.0",
     "leaflet": "^1.8.0",
