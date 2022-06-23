@@ -118,6 +118,7 @@
 .homeMap {
   width: 1200px;
   height: 720px;
+  z-index: 1;
 }
 
 

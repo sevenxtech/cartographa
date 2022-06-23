@@ -80,19 +80,12 @@ const MapSelect = () => {
   return (
     <>
       {<div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="bg-gray-800 ">
           {({ open }) => (
             <>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between h-16">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="h-8 w-8"
-                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                        alt="Workflow"
-                      />
-                    </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) => (
@@ -132,7 +125,7 @@ const MapSelect = () => {
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                               >
-                                <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                <Listbox.Options className="z-20 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                   {languages.map((item, Idx) => (
                                     <Listbox.Option
                                       key={Idx}
@@ -292,7 +285,7 @@ const MapSelect = () => {
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             {/* Replace with your content */}
             <div className="px-4 py-6 sm:px-0">
-              {mapData && <Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={4} dragging={true} attributionControl={false} zoomControl={false}>
+              {mapData && <Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={2} dragging={true} attributionControl={false} zoomControl={false}>
                 {({ TileLayer, GeoJSON }) => (
                   <>
                     <TileLayer
