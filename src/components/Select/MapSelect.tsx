@@ -6,12 +6,13 @@ import { BellIcon, CheckIcon, MenuIcon, SelectorIcon, XIcon } from '@heroicons/r
 import { LatLngExpression } from 'leaflet';
 
 import Map from '@components/Map';
+
 import simpleJson from '../../data/SimpleWorldLang.json'
 
 const languages: any[] = [];
 
 simpleJson.features.forEach(feature => {
-  let langObject: any = new Object();
+  const langObject: any = new Object();
   langObject.language = feature.properties.language
   langObject.iso = feature.properties.iso
   languages.push(langObject)
@@ -49,7 +50,7 @@ const MapSelect = () => {
   useEffect(() => {
     setLoading(true);
     const isoCode = selected.iso;
-    let data = simpleJson.features.filter((e) => {
+    const data = simpleJson.features.filter((e) => {
       console.log(e.properties.iso)
       if (e.properties.iso === isoCode)
         return e;
@@ -115,7 +116,7 @@ const MapSelect = () => {
                               <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                                 <Combobox.Input
                                   className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-                                  displayValue={(e) => e.language}
+                                  displayValue={(e:any) => e.language}
                                   onChange={(event) => setQuery(event.target.value)}
                                 />
                                 <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
