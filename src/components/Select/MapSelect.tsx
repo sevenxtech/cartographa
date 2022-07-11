@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState, Fragment } from 'react';
 
 import styles from "@../../styles/Home.module.css";
-import { Disclosure, Listbox, Menu, Transition } from '@headlessui/react';
+import { Disclosure, Menu, Transition, Combobox } from '@headlessui/react';
 import { BellIcon, CheckIcon, MenuIcon, SelectorIcon, XIcon } from '@heroicons/react/outline';
 import { LatLngExpression } from 'leaflet';
 
 import Map from '@components/Map';
+import simpleJson from '../../data/SimpleWorldLang.json'
 
-const languages = [
-  { iso: "ars", language: "Nadji Arabic" },
-  { iso: "sin", language: "Singalese" },
-  { iso: "tso", language: "Tsongo" },
-  { iso: "gan", language: "Chinese, Gan" },
-]
+const languages: any[] = [];
+
+simpleJson.features.forEach(feature => {
+  let langObject: any = new Object();
+  langObject.language = feature.properties.language
+  langObject.iso = feature.properties.iso
+  languages.push(langObject)
+});
+
 const DEFAULT_CENTER: LatLngExpression = [28.70, 77.10];
 const user = {
   name: 'Tom Cook',
@@ -38,29 +42,28 @@ const MapSelect = () => {
   const [mapData, setmapData] = useState<any>();
   const [isLoading, setLoading] = useState(false);
   const [selected, setSelected] = useState(languages[0]);
+  const [query, setQuery] = useState('')
 
   const geoJsonRef = useRef<any>();
 
   useEffect(() => {
     setLoading(true);
     const isoCode = selected.iso;
-    fetch('/api/graphqlapi', {
-      method: "post",
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        isoCode,
-      })
+    let data = simpleJson.features.filter((e) => {
+      console.log(e.properties.iso)
+      if (e.properties.iso === isoCode)
+        return e;
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setmapData(data.postgis)
-        setLoading(false)
-        console.log("apiresponse", data)
-      })
+    setmapData(data)
+    setLoading(false)
   }, [setSelected, selected])
+
+  const filteredLanguages =
+    query === ''
+      ? languages
+      : languages.filter((e) => {
+        return e.language.toLowerCase().includes(query.toLowerCase())
+      })
 
   useEffect(() => {
     if (geoJsonRef.current) {
@@ -74,7 +77,7 @@ const MapSelect = () => {
     const tier = feature.properties.Level;
     const lang = feature.properties.language;
     layer.bindPopup(`${iso} ${tier}  ${lang}`)
-    // layer.bindTooltip("desc",  {permanent: false, direction:"auto"}) 
+    layer.bindTooltip(`${lang}`,  {permanent: false, direction:"auto"}) 
   }
 
   return (
@@ -107,57 +110,69 @@ const MapSelect = () => {
                         {/* Listbox */}
 
                         <div className="w-72">
-                          <Listbox value={selected} onChange={setSelected}>
-                            {/* <Listbox value={language} onChange={setLanguage}> */}
+                          <Combobox value={selected} onChange={setSelected}>
                             <div className="relative mt-1">
-                              <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                                <span className="block truncate">{selected.language}</span>
-                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                              <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+                                <Combobox.Input
+                                  className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+                                  displayValue={(e) => e.language}
+                                  onChange={(event) => setQuery(event.target.value)}
+                                />
+                                <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                                   <SelectorIcon
                                     className="h-5 w-5 text-gray-400"
                                     aria-hidden="true"
                                   />
-                                </span>
-                              </Listbox.Button>
+                                </Combobox.Button>
+                              </div>
                               <Transition
                                 as={Fragment}
                                 leave="transition ease-in duration-100"
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
+                                afterLeave={() => setQuery('')}
                               >
-                                <Listbox.Options className="z-20 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                  {languages.map((item, Idx) => (
-                                    <Listbox.Option
-                                      key={Idx}
-                                      className={({ active }) =>
-                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
-                                        }`
-                                      }
-                                      value={item}
-                                    >
-                                      {({ selected }) => (
-                                        <>
-                                          <span
-                                            className={`block truncate ${selected ? 'font-medium' : 'font-normal'
-                                              }`}
-                                          >
-                                            {item.language}
-                                          </span>
-                                          {selected ? (
-                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                              <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                <Combobox.Options className=" z-20 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                  {filteredLanguages.length === 0 && query !== '' ? (
+                                    <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                                      Nothing found.
+                                    </div>
+                                  ) : (
+                                    filteredLanguages.map((e, idx) => (
+                                      <Combobox.Option
+                                        key={idx}
+                                        className={({ active }) =>
+                                          `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-teal-600 text-white' : 'text-gray-900'
+                                          }`
+                                        }
+                                        value={e}
+                                      >
+                                        {({ selected, active }) => (
+                                          <>
+                                            <span
+                                              className={`block truncate ${selected ? 'font-medium' : 'font-normal'
+                                                }`}
+                                            >
+                                              {e.language}
                                             </span>
-                                          ) : null}
-                                        </>
-                                      )}
-                                    </Listbox.Option>
-                                  ))}
-                                </Listbox.Options>
+                                            {selected ? (
+                                              <span
+                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-white' : 'text-teal-600'
+                                                  }`}
+                                              >
+                                                <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                              </span>
+                                            ) : null}
+                                          </>
+                                        )}
+                                      </Combobox.Option>
+                                    ))
+                                  )}
+                                </Combobox.Options>
                               </Transition>
                             </div>
-                          </Listbox>
+                          </Combobox>
                         </div>
-
                       </div>
                     </div>
                   </div>
