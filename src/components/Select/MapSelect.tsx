@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, Fragment } from 'react';
 
 import styles from "@../../styles/Home.module.css";
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { BellIcon,  MenuIcon, XIcon } from '@heroicons/react/outline';
+import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import { LatLngExpression } from 'leaflet';
 
 import Map from '@components/Map';
@@ -11,6 +11,11 @@ import simpleJson from '../../data/SimpleWorldLang.json'
 import SelectList from './SelectList';
 
 const languages: any[] = [];
+
+const langObject: any = new Object();
+langObject.language = "All Languages";
+langObject.iso = "all"
+languages.push(langObject)
 
 simpleJson.features.forEach(feature => {
   const langObject: any = new Object();
@@ -27,7 +32,7 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
+  { name: 'Language Polygons', href: '#', current: true },
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
@@ -48,12 +53,18 @@ const MapSelect = () => {
 
   useEffect(() => {
     setLoading(true);
+    let data;
     const isoCode = selected.iso;
-    const data = simpleJson.features.filter((e) => {
-      console.log(e.properties.iso)
-      if (e.properties.iso === isoCode)
-        return e;
-    })
+    if (isoCode == "all") {
+      data = simpleJson.features
+    }
+    else {
+      data = simpleJson.features.filter((e) => {
+        if (e.properties.iso === isoCode)
+          return e;
+      })
+    }
+
     setmapData(data)
     setLoading(false)
   }, [setSelected, selected])
@@ -70,7 +81,7 @@ const MapSelect = () => {
     const tier = feature.properties.Level;
     const lang = feature.properties.language;
     layer.bindPopup(`${iso} ${tier}  ${lang}`)
-    layer.bindTooltip(`${lang}`,  {permanent: false, direction:"auto"}) 
+    layer.bindTooltip(`${lang}`, { permanent: false, direction: "auto" })
   }
 
   return (
@@ -101,7 +112,7 @@ const MapSelect = () => {
                         ))}
 
                         {/* Listbox */}
-                        <SelectList selectedprops={[selected,setSelected,languages]}/>
+                        <SelectList selectedprops={[selected, setSelected, languages]} />
 
                       </div>
                     </div>
@@ -222,8 +233,7 @@ const MapSelect = () => {
 
         <header className="bg-white shadow">
           <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold text-gray-900">{!isLoading ? <p>{selected.language}</p> : <p>Loading..</p>}</h1>
-
+          <h1 className="text-2xl font-bold text-gray-900">{!isLoading ? <p>{selected.language}</p> : <p>Loading..</p>}</h1>
           </div>
         </header>
         <main>
@@ -237,13 +247,11 @@ const MapSelect = () => {
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
-                    <GeoJSON ref={geoJsonRef} data={mapData} onEachFeature={onEachLayer}>
-                    </GeoJSON>
+                    <GeoJSON ref={geoJsonRef} data={mapData} onEachFeature={onEachLayer} />
                   </>
                 )}
               </Map>}
             </div>
-
           </div>
         </main>
       </div>}
