@@ -239,7 +239,7 @@ const MapSelect = () => {
         <main>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             {/* Replace with your content */}
-            <div className="px-4 py-6 sm:px-0">
+            <div className="px-4 sm:px-0">
               {mapData && <Map className={styles.homeMap} center={DEFAULT_CENTER} zoom={2} dragging={true} attributionControl={false} zoomControl={false}>
                 {({ TileLayer, GeoJSON }) => (
                   <>
@@ -254,6 +254,15 @@ const MapSelect = () => {
             </div>
           </div>
         </main>
+
+<footer className="bg-gray-200 text-center lg:text-left">
+  <div className="text-gray-700 text-center p-4">
+    Made by &nbsp;
+    <a className="text-gray-800" href="https://www.sevenx.tech/">SevenX. &nbsp;</a>
+    Data Source : &nbsp;
+    <a className="text-gray-800" href="http://unfoldingword.org/">unfoldingword</a>
+  </div>
+</footer>
       </div>}
     </>
   )
